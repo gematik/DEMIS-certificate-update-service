@@ -1,1 +1,107 @@
-# DEMIS-certificate-update-service
+<img align="right" width="250" height="47" src="media/Gematik_Logo_Flag.png"/> <br/> 
+
+# Certificate Update Service
+
+[![Quality Gate Status](https://sonar.prod.ccs.gematik.solutions/api/project_badges/measure?project=de.gematik.demis%3Acertificate-update-service&metric=alert_status&token=13b3e1eb2d7195164379e837c3deb13203dd1d5a)](https://sonar.prod.ccs.gematik.solutions/dashboard?id=de.gematik.demis%3Acertificate-update-service)[![Vulnerabilities](https://sonar.prod.ccs.gematik.solutions/api/project_badges/measure?project=de.gematik.demis%3Acertificate-update-service&metric=vulnerabilities&token=13b3e1eb2d7195164379e837c3deb13203dd1d5a)](https://sonar.prod.ccs.gematik.solutions/dashboard?id=de.gematik.demis%3Acertificate-update-service)[![Bugs](https://sonar.prod.ccs.gematik.solutions/api/project_badges/measure?project=de.gematik.demis%3Acertificate-update-service&metric=bugs&token=13b3e1eb2d7195164379e837c3deb13203dd1d5a)](https://sonar.prod.ccs.gematik.solutions/dashboard?id=de.gematik.demis%3Acertificate-update-service)[![Code Smells](https://sonar.prod.ccs.gematik.solutions/api/project_badges/measure?project=de.gematik.demis%3Acertificate-update-service&metric=code_smells&token=13b3e1eb2d7195164379e837c3deb13203dd1d5a)](https://sonar.prod.ccs.gematik.solutions/dashboard?id=de.gematik.demis%3Acertificate-update-service)[![Code Smells](https://sonar.prod.ccs.gematik.solutions/api/project_badges/measure?project=de.gematik.demis%3Acertificate-update-service&metric=code_smells&token=13b3e1eb2d7195164379e837c3deb13203dd1d5a)](https://sonar.prod.ccs.gematik.solutions/dashboard?id=de.gematik.demis%3Acertificate-update-service)[![Coverage](https://sonar.prod.ccs.gematik.solutions/api/project_badges/measure?project=de.gematik.demis%3Acertificate-update-service&metric=coverage&token=13b3e1eb2d7195164379e837c3deb13203dd1d5a)](https://sonar.prod.ccs.gematik.solutions/dashboard?id=de.gematik.demis%3Acertificate-update-service)
+
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#release-notes">Release Notes</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#feature-flags">Feature Flags</a></li>
+    <li><a href="#security-policy">Security Policy</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
+
+## About The Project
+
+This Service runs as a standalone CLI application and retrieves and validates the X509 Certificates of Users stored in the DEMIS Keycloak instance.
+The Validation runs against the D-Trust Public LDAP Registry, using the OCSP Protocol and the Certificate Revocation List.
+
+The Certificates are stored in a Redis Server, running in the DEMIS Infrastructure.
+
+### Release Notes
+
+See [ReleaseNotes.md](./ReleaseNotes.md) for all information regarding the (newest) releases.
+
+## Getting Started
+
+### Prerequisites
+
+The Project requires Java 21 and Maven 3.8+.
+
+### Installation
+
+The Project can be built with the following command:
+
+```sh
+mvn clean install
+```
+
+The Docker Image associated to the service can be built with the extra profile `docker`:
+
+```sh
+mvn clean install -Pdocker
+```
+
+## Usage
+
+The application can be executed from a JAR file or a Docker Image:
+
+```sh
+# As JAR Application
+java -jar target/certificate-update-service.jar
+# As Docker Image
+docker run --rm -it -p 8080:8080 certificate-update-service:latest
+```
+
+It can also be deployed on Kubernetes by using the Helm Chart defined in the folder `deployment/helm/certificate-update-service`:
+
+```ssh
+helm install certificate-update-service ./deployment/helm/certificate-update-service
+```
+
+**Important**: It requires a Keycloak and a Redis Account, defined as environment variables, in order to let it fetch the Users' list and update the certificates in Redis.
+
+
+## Feature Flags
+
+For the Live-Test Environment, and for all the Environments where there is a need to load a set of existing Certificates from the File System, the Feature Flag `feature.flag.import.from.disk` should be set to `true`. As source folder, the path specified with the property `cert.root.folder.path` will be used and the certificates will be uploaded to the Redis Server.
+
+## Security Policy
+
+If you want to see the security policy, please check our [SECURITY.md](.github/SECURITY.md).
+
+## Contributing
+
+If you want to contribute, please check our [CONTRIBUTING.md](.github/CONTRIBUTING.md).
+
+## License
+
+EUROPEAN UNION PUBLIC LICENCE v. 1.2
+
+EUPL © the European Union 2007, 2016
+
+Copyright (c) 2023 gematik GmbH
+
+See [LICENSE](LICENSE.md).
+
+## Contact
+
+E-Mail to [DEMIS Entwicklung](mailto:demis-entwicklung@gematik.de?subject=[GitHub]%20Certificate-Update-Service)
