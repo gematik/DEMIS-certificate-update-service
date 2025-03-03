@@ -1,0 +1,26 @@
+{
+  "name" : "realms_master_protocol_openid-connect_token",
+  "request" : {
+    "url" : "/realms/master/protocol/openid-connect/token",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+      "equalTo" : "username=testuser&password=TopSecret&client_id=admin-cli&grant_type=password",
+      "caseInsensitive" : false
+    } ]
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"access_token\":\"ey.MySecretAccessToken\",\"expires_in\":60,\"refresh_expires_in\":1800,\"refresh_token\":\"NOT_NEEDED\",\"token_type\":\"Bearer\",\"not-before-policy\":0,\"session_state\":\"94d8c1be-eae3-4dfd-8819-0fa4772d64b5\",\"scope\":\"profile email\"}",
+    "headers" : {
+      "Referrer-Policy" : "no-referrer",
+      "X-Frame-Options" : "SAMEORIGIN",
+      "Strict-Transport-Security" : "max-age=31536000; includeSubDomains",
+      "Cache-Control" : "no-store",
+      "X-Content-Type-Options" : "nosniff",
+      "Set-Cookie" : [ "KEYCLOAK_LOCALE=; Version=1; Comment=Expiring cookie; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Max-Age=0; Path=/auth/realms/master/; HttpOnly", "KC_RESTART=; Version=1; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Max-Age=0; Path=/auth/realms/master/; HttpOnly" ],
+      "Pragma" : "no-cache",
+      "X-XSS-Protection" : "1; mode=block",
+      "Content-Type" : "application/json"
+    }
+  }
+}
