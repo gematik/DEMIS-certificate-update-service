@@ -58,18 +58,20 @@ customEnvVars:
   CERT_CA_FILE_PATH: config/root-ca.crt
   CERT_SUB_CA_FILE_PATH: config/sub-ca.crt
   # Keycloak Specific
-  KEYCLOAK_BASE_URL: "http://keycloak:8080/"
+  KEYCLOAK_BASE_URL: "http://keycloak.demis.svc.cluster.local/"
   KEYCLOAK_TOKEN_URL: "realms/master/protocol/openid-connect/token"
   KEYCLOAK_USERS_URL: "admin/realms/OEGD/users"
   KEYCLOAK_ADMIN: "admin"
   KEYCLOAK_CLIENTID: "admin-cli"
   KEYCLOAK_GRANTTYPE: "password"
   ROOT_LOG_LEVEL: "INFO"
-  REDIS_HOST: "redis-cus"
+  REDIS_HOST: "redis-cus.demis.svc.cluster.local"
   REDIS_PORT: "6379"
   REDIS_USER: "writer"
   # It should be set to "true" only in Live-Test environment!
   FEATURE_FLAG_IMPORT_FROM_DISK: "false"
+  # need if Testuser with Sender is recipient used
+  FEATURE_FLAG_READ_LAB_CERTIFICATE_FROM_DISK: "false"
 
 # Define custom Container Entrypoint and Arguments (e.g. JVM Tuning)
 # If not given, the Entrypoint defined in Dockerfile will be used
@@ -138,11 +140,10 @@ securityContext:
 # Resources
 resources:
   limits:
-    cpu: "300m"
-    memory: "1Gi"
+    memory: "500Mi"
   requests:
-    cpu: "100m"
-    memory: "512Mi"
+    cpu: "400m"
+    memory: "500Mi"
 
 nodeSelector: {}
 

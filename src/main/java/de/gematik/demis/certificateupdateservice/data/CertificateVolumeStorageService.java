@@ -19,6 +19,10 @@ package de.gematik.demis.certificateupdateservice.data;
  * In case of changes by gematik find details in the "Readme" file.
  *
  * See the Licence for the specific language governing permissions and limitations under the Licence.
+ *
+ * *******
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  * #L%
  */
 
@@ -38,15 +42,18 @@ import org.springframework.stereotype.Service;
 public class CertificateVolumeStorageService {
 
   private final Path rootPath;
+  private final FileManager fileManager;
 
   /**
    * Constructs an instance of this class.
    *
    * @param rootPath the root path where are going to be stored the folders with certificates
    */
-  public CertificateVolumeStorageService(@Value("${cert.root.folder.path}") String rootPath) {
+  public CertificateVolumeStorageService(
+      @Value("${cert.root.folder.path}") String rootPath, FileManager fileManager) {
 
     this.rootPath = Path.of(rootPath);
+    this.fileManager = fileManager;
   }
 
   /**
@@ -56,6 +63,6 @@ public class CertificateVolumeStorageService {
    */
   public Map<String, X509Certificate> loadCertificatesFromVolume() {
     log.info("Loading Certificates from disk");
-    return FileManager.loadCertificatesFromPath(rootPath);
+    return fileManager.loadCertificatesFromPath(rootPath);
   }
 }

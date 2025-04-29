@@ -19,12 +19,14 @@ package de.gematik.demis.certificateupdateservice.data;
  * In case of changes by gematik find details in the "Readme" file.
  *
  * See the Licence for the specific language governing permissions and limitations under the Licence.
+ *
+ * *******
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  * #L%
  */
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.gematik.demis.certificateupdateservice.BaseFileLoaderTestHelper;
 import java.io.File;
@@ -110,7 +112,7 @@ class FileManagerTest extends BaseFileLoaderTestHelper {
     final var createdFolder =
         Assertions.assertDoesNotThrow(() -> Files.createDirectories(sourcePath));
     // AND it is deleted
-    FileManager.deleteDirectoryIncludingFiles(createdFolder);
+    new FileManager(true).deleteDirectoryIncludingFiles(createdFolder);
     // THEN the folder doesn't exist anymore
     assertFalse(Files.exists(createdFolder), "The folder should be deleted");
   }
@@ -123,7 +125,7 @@ class FileManagerTest extends BaseFileLoaderTestHelper {
     // WHEN certificates are written to disk
     Assertions.assertDoesNotThrow(() -> persistCertificatesOnDisk(sourceCertificates, sourcePath));
     // AND it is deleted
-    FileManager.deleteDirectoryIncludingFiles(sourcePath);
+    new FileManager(false).deleteDirectoryIncludingFiles(sourcePath);
     // THEN the folder doesn't exist anymore
     assertFalse(Files.exists(sourcePath), "The folder should be deleted");
   }
@@ -288,14 +290,16 @@ class FileManagerTest extends BaseFileLoaderTestHelper {
     log.info("expectLoadCertificatesFromDiskSuccessfully");
     // GIVEN A List of certificates
     final var certList = Assertions.assertDoesNotThrow(this::getValidCertificates);
+    assertEquals(3, certList.size(), "Not all valid certificates are loaded");
     // WHEN certificates are written to disk
     Assertions.assertDoesNotThrow(() -> persistCertificatesOnDisk(certList, sourcePath));
     // THEN load certificates from disk
     Map<String, X509Certificate> loadedCertificates =
-        FileManager.loadCertificatesFromPath(sourcePath);
+        new FileManager(false).loadCertificatesFromPath(sourcePath);
     // AND verify the loaded certificates
     assertTrue(loadedCertificates.containsKey("1.01.0.53."), "Certificate 1.01.0.53..der missing");
     assertTrue(loadedCertificates.containsKey("1."), "Certificate 1..der missing");
+    assertEquals(2, loadedCertificates.size(), "More than 2 certificates loaded");
   }
 
   @Test
@@ -305,7 +309,7 @@ class FileManagerTest extends BaseFileLoaderTestHelper {
     Assertions.assertDoesNotThrow(() -> Files.createDirectories(sourcePath));
     // WHEN load certificates from disk
     Map<String, X509Certificate> loadedCertificates =
-        FileManager.loadCertificatesFromPath(sourcePath);
+        new FileManager(false).loadCertificatesFromPath(sourcePath);
     // THEN verify no certificates are loaded
     assertTrue(
         loadedCertificates.isEmpty(), "No certificates should be loaded from an empty folder");
@@ -319,9 +323,27 @@ class FileManagerTest extends BaseFileLoaderTestHelper {
     Files.write(sourcePath.resolve("invalid.der"), new byte[] {0, 1, 2, 3});
     // WHEN load certificates from disk
     Map<String, X509Certificate> loadedCertificates =
-        FileManager.loadCertificatesFromPath(sourcePath);
+        new FileManager(false).loadCertificatesFromPath(sourcePath);
     // THEN verify no certificates are loaded
     assertTrue(loadedCertificates.isEmpty(), "No certificates should be loaded from invalid files");
+  }
+
+  @Test
+  void expectLoadCertificatesFromDiskWithLabWorksSuccessfully() {
+    log.info("expectLoadCertificatesFromDiskWithLabWorksSuccessfully");
+    // GIVEN A List of certificates
+    final var certList = Assertions.assertDoesNotThrow(this::getValidCertificates);
+    assertEquals(3, certList.size(), "Not all valid certificates are loaded");
+    // WHEN certificates are written to disk
+    Assertions.assertDoesNotThrow(() -> persistCertificatesOnDisk(certList, sourcePath));
+    // THEN load certificates from disk
+    Map<String, X509Certificate> loadedCertificates =
+        new FileManager(true).loadCertificatesFromPath(sourcePath);
+    // AND verify the loaded certificates
+    assertTrue(loadedCertificates.containsKey("1.01.0.53."), "Certificate 1.01.0.53..der missing");
+    assertTrue(loadedCertificates.containsKey("1."), "Certificate 1..der missing");
+    assertTrue(loadedCertificates.containsKey("11111"), "LAB Certificate 11111.der missing");
+    assertEquals(3, loadedCertificates.size(), "More than 2 certificates loaded");
   }
 
   // Gives a set of valid certificates
@@ -332,10 +354,14 @@ class FileManagerTest extends BaseFileLoaderTestHelper {
     final var cert2 =
         Assertions.assertDoesNotThrow(
             () -> getX509CertificateFromFileName("certificates/self-signed/RKI-1._.crt"));
+    final var cert3 =
+        Assertions.assertDoesNotThrow(
+            () -> getX509CertificateFromFileName("certificates/self-signed/DEMIS-11111.crt"));
 
     final var certList = new ArrayList<CertificateDataEntity>();
     certList.add(new CertificateDataEntity("1.01.0.53.", cert1.getEncoded(), LocalDateTime.now()));
     certList.add(new CertificateDataEntity("1.", cert2.getEncoded(), LocalDateTime.now()));
+    certList.add(new CertificateDataEntity("11111", cert3.getEncoded(), LocalDateTime.now()));
     return certList;
   }
 
