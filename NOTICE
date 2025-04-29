@@ -95,7 +95,7 @@ This project includes:
   json-patch under Lesser General Public License, version 3 or greater or Apache Software License, version 2.0
   json-path under The Apache Software License, Version 2.0
   JSONassert under The Apache Software License, Version 2.0
-  JUL to SLF4J bridge under MIT License
+  JUL to SLF4J bridge under MIT
   JUnit under Eclipse Public License 1.0
   JUnit Jupiter (Aggregator) under Eclipse Public License v2.0
   JUnit Jupiter API under Eclipse Public License v2.0
@@ -162,7 +162,7 @@ This project includes:
   RESTEasy Multipart Provider under Apache License 2.0
   RNGOM under Eclipse Distribution License - v 1.0
   service-base under Licensed under the EUPL 1.2
-  SLF4J API Module under MIT License
+  SLF4J API Module under MIT
   SnakeYAML under Apache License, Version 2.0
   Spring AOP under Apache License, Version 2.0
   Spring Beans under Apache License, Version 2.0

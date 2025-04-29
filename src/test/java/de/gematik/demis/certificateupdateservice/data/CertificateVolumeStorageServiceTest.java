@@ -19,6 +19,10 @@ package de.gematik.demis.certificateupdateservice.data;
  * In case of changes by gematik find details in the "Readme" file.
  *
  * See the Licence for the specific language governing permissions and limitations under the Licence.
+ *
+ * *******
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  * #L%
  */
 
@@ -48,7 +52,8 @@ class CertificateVolumeStorageServiceTest extends BaseFileLoaderTestHelper {
 
   @BeforeEach
   void setUp() {
-    certificateVolumeStorageService = new CertificateVolumeStorageService(FOLDER_PATH);
+    certificateVolumeStorageService =
+        new CertificateVolumeStorageService(FOLDER_PATH, new FileManager(false));
   }
 
   @AfterEach
@@ -63,7 +68,33 @@ class CertificateVolumeStorageServiceTest extends BaseFileLoaderTestHelper {
     try {
       final var tempDir = Files.createTempDirectory(Path.of("target"), "");
       certificateVolumeStorageService =
-          new CertificateVolumeStorageService(tempDir.toAbsolutePath().toString());
+          new CertificateVolumeStorageService(
+              tempDir.toAbsolutePath().toString(), new FileManager(false));
+      // copy certificates to target folder
+      Files.copy(
+          Path.of(
+              Objects.requireNonNull(
+                      classLoader.getResource("certificates/self-signed/GA-1.01.0.53._.crt"))
+                  .toURI()),
+          tempDir,
+          StandardCopyOption.REPLACE_EXISTING);
+    } catch (FileAlreadyExistsException e) {
+      // Ignore
+    }
+    Map<String, X509Certificate> loadedCertificates =
+        certificateVolumeStorageService.loadCertificatesFromVolume();
+
+    assertTrue(loadedCertificates.containsKey("1.01.0.53."));
+  }
+
+  @Test
+  void shouldLoadCertificatesFromVolumeSuccessfullyWithLab()
+      throws IOException, URISyntaxException {
+    try {
+      final var tempDir = Files.createTempDirectory(Path.of("target"), "");
+      certificateVolumeStorageService =
+          new CertificateVolumeStorageService(
+              tempDir.toAbsolutePath().toString(), new FileManager(true));
       // copy certificates to target folder
       Files.copy(
           Path.of(

@@ -19,6 +19,10 @@ package de.gematik.demis.certificateupdateservice.data;
  * In case of changes by gematik find details in the "Readme" file.
  *
  * See the Licence for the specific language governing permissions and limitations under the Licence.
+ *
+ * *******
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  * #L%
  */
 
@@ -35,6 +39,7 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.security.auth.x500.X500Principal;
@@ -42,13 +47,28 @@ import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
 
 /** Handles the File Operations for the Certificates. */
 @Slf4j
-public final class FileManager {
+@Component
+public class FileManager {
 
-  private FileManager() {}
+  private final boolean isReadLabCertificateFromDisk;
+
+  /**
+   * Constructs an instance of this class.
+   *
+   * @param isReadLabCertificateFromDisk flag to indicate if lab certificates should be read from
+   *     disk
+   */
+  public FileManager(
+      @Value("${feature.flag.read.lab.certificate.from.disk}")
+          boolean isReadLabCertificateFromDisk) {
+    this.isReadLabCertificateFromDisk = isReadLabCertificateFromDisk;
+  }
 
   /**
    * Loads the Certificates from the given folder.
@@ -56,22 +76,30 @@ public final class FileManager {
    * @param sourceFolder the folder where the certificates are stored
    * @return a Map containing the Certificates
    */
-  protected static Map<String, X509Certificate> loadCertificatesFromPath(Path sourceFolder) {
+  protected Map<String, X509Certificate> loadCertificatesFromPath(Path sourceFolder) {
     Map<String, X509Certificate> certificates = new HashMap<>();
     try (Stream<Path> paths = Files.walk(sourceFolder)) {
-      paths
-          .filter(Files::isRegularFile)
-          .forEach(
-              path -> {
-                try (InputStream in = Files.newInputStream(path)) {
-                  X509Certificate certificate =
-                      (X509Certificate)
+      certificates =
+          paths
+              .filter(Files::isRegularFile) // Nur reguläre Dateien berücksichtigen
+              .map(
+                  path -> {
+                    try (InputStream in = Files.newInputStream(path)) {
+                      // Read the certificate from the file
+                      return (X509Certificate)
                           CertificateFactory.getInstance("X.509").generateCertificate(in);
-                  certificates.put(getUserNameFromCertificate(certificate), certificate);
-                } catch (Exception e) {
-                  log.error("Failed to load certificate from file: {}", path, e);
-                }
-              });
+                    } catch (Exception e) {
+                      log.error("Failed to load certificate from file: {}", path, e);
+                      return null;
+                    }
+                  })
+              .filter(Objects::nonNull) // Remove null values from the stream
+              .filter(this::checkCommonName) // filter out certificates with invalid CN
+              .collect(
+                  Collectors.toMap(
+                      this::getUserNameFromCertificate, // Key: Username
+                      certificate -> certificate // Value: Certificate
+                      ));
     } catch (IOException e) {
       log.error("Failed to read certificates from disk", e);
     }
@@ -97,7 +125,7 @@ public final class FileManager {
    *
    * @param folder the folder to be deleted
    */
-  protected static void deleteDirectoryIncludingFiles(final Path folder) {
+  protected void deleteDirectoryIncludingFiles(final Path folder) {
     try {
       final boolean deleted = FileSystemUtils.deleteRecursively(folder);
       log.info("Directory {} has been deleted: {}", folder, deleted);
@@ -231,7 +259,7 @@ public final class FileManager {
     return hashes;
   }
 
-  private static String getCommonName(final X509Certificate certificate) {
+  private String getCommonName(final X509Certificate certificate) {
     X500Principal principal = certificate.getSubjectX500Principal();
     String dn = principal.getName();
     String[] dnComponents = dn.split(",");
@@ -243,8 +271,35 @@ public final class FileManager {
     return null;
   }
 
-  private static String getUserNameFromCertificate(final X509Certificate certificate) {
+  private String getUserNameFromCertificate(final X509Certificate certificate) {
     final var commonName = Objects.requireNonNull(getCommonName(certificate));
-    return commonName.replace("GA-", "").replace("RKI-", "");
+    if (isReadLabCertificateFromDisk) {
+      return commonName.replace("GA-", "").replace("RKI-", "").replace("DEMIS-", "");
+    } else {
+      return commonName.replace("GA-", "").replace("RKI-", "");
+    }
+  }
+
+  /**
+   * Checks if the Common Name of the certificate is valid.
+   *
+   * @param certificate the certificate to check
+   * @return true if the Common Name is valid, false otherwise
+   */
+  private boolean checkCommonName(final X509Certificate certificate) {
+    final var commonName = Optional.ofNullable(getCommonName(certificate));
+
+    if (commonName.isEmpty()) { // not supported certificate without CN
+      log.error(
+          "Failed to load certificate without CN: {}",
+          certificate.getSubjectX500Principal().toString());
+      return false;
+    }
+
+    if (!commonName.get().startsWith("DEMIS-")) { // not lab certificate
+      return true;
+    }
+
+    return isReadLabCertificateFromDisk;
   }
 }

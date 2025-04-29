@@ -19,6 +19,10 @@ package de.gematik.demis.certificateupdateservice;
  * In case of changes by gematik find details in the "Readme" file.
  *
  * See the Licence for the specific language governing permissions and limitations under the Licence.
+ *
+ * *******
+ *
+ * For additional notes and disclaimer from gematik and in case of changes by gematik find details in the "Readme" file.
  * #L%
  */
 
@@ -35,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 
 @Slf4j
-public class BaseFileLoaderTestHelper {
+public abstract class BaseFileLoaderTestHelper {
 
   public ClassLoader classLoader;
   public X509Certificate subCa;
