@@ -8,7 +8,7 @@
     <relativePath></relativePath><!-- lookup parent from repository -->
   </parent>
   <artifactId>certificate-update-service</artifactId>
-  <version>1.6.1-SNAPSHOT</version>
+  <version>1.7.1-SNAPSHOT</version>
   <name>certificate-update-service</name>
   <packaging>jar</packaging>
   <description>Update service for user certificates of DEMIS users</description>

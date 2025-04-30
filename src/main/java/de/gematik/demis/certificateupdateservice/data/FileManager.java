@@ -78,12 +78,17 @@ public class FileManager {
    */
   protected Map<String, X509Certificate> loadCertificatesFromPath(Path sourceFolder) {
     Map<String, X509Certificate> certificates = new HashMap<>();
-    try (Stream<Path> paths = Files.walk(sourceFolder)) {
+    // subfolders are excluded.
+    // Background: We mount the certificates from a secret and Kubernetes
+    // creates subdirectories (starting with '..') which contain all entries, and we would otherwise
+    // read these twice
+    try (Stream<Path> paths = Files.list(sourceFolder)) {
       certificates =
           paths
               .filter(Files::isRegularFile) // Nur reguläre Dateien berücksichtigen
               .map(
                   path -> {
+                    log.info("Load certificate from {}", path);
                     try (InputStream in = Files.newInputStream(path)) {
                       // Read the certificate from the file
                       return (X509Certificate)
@@ -98,8 +103,14 @@ public class FileManager {
               .collect(
                   Collectors.toMap(
                       this::getUserNameFromCertificate, // Key: Username
-                      certificate -> certificate // Value: Certificate
-                      ));
+                      certificate -> certificate, // Value: Certificate
+                      (a, b) -> {
+                        log.error(
+                            "Duplicate certificates detected!: Ignore this certificate: {}, use this certificate: {} ",
+                            a,
+                            b);
+                        return b;
+                      }));
     } catch (IOException e) {
       log.error("Failed to read certificates from disk", e);
     }
