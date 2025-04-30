@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -300,6 +301,31 @@ class FileManagerTest extends BaseFileLoaderTestHelper {
     assertTrue(loadedCertificates.containsKey("1.01.0.53."), "Certificate 1.01.0.53..der missing");
     assertTrue(loadedCertificates.containsKey("1."), "Certificate 1..der missing");
     assertEquals(2, loadedCertificates.size(), "More than 2 certificates loaded");
+  }
+
+  @Test
+  void expectLoadCertificatesFromDiskWithDuplicatesWorksSuccessfully() throws Exception {
+    log.info("expectLoadCertificatesFromDiskWithDuplicatesWorksSuccessfully");
+    final var tempDir = Files.createTempDirectory(Path.of("target"), "");
+    try {
+      final Path pathOfValidCertificate =
+          Path.of(
+              Objects.requireNonNull(
+                      classLoader.getResource("certificates/self-signed/GA-1.01.0.53._.crt"))
+                  .toURI());
+      Files.copy(pathOfValidCertificate, tempDir.resolve("one.cert"));
+      Files.copy(pathOfValidCertificate, tempDir.resolve("two.cert"));
+
+      final FileManager underTest = new FileManager(false);
+      final Map<String, X509Certificate> result = underTest.loadCertificatesFromPath(tempDir);
+
+      org.assertj.core.api.Assertions.assertThat(result)
+          .isNotNull()
+          .hasSize(1)
+          .containsKey("1.01.0.53.");
+    } finally {
+      FileUtils.deleteDirectory(tempDir.toFile());
+    }
   }
 
   @Test

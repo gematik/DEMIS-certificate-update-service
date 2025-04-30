@@ -32,7 +32,6 @@ import de.gematik.demis.certificateupdateservice.BaseFileLoaderTestHelper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -43,6 +42,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class CertificateVolumeStorageServiceTest extends BaseFileLoaderTestHelper {
 
@@ -63,53 +64,30 @@ class CertificateVolumeStorageServiceTest extends BaseFileLoaderTestHelper {
     FileUtils.deleteDirectory(new File(FOLDER_PATH));
   }
 
-  @Test
-  void shouldLoadCertificatesFromVolumeSuccessfully() throws IOException, URISyntaxException {
-    try {
-      final var tempDir = Files.createTempDirectory(Path.of("target"), "");
-      certificateVolumeStorageService =
-          new CertificateVolumeStorageService(
-              tempDir.toAbsolutePath().toString(), new FileManager(false));
-      // copy certificates to target folder
-      Files.copy(
-          Path.of(
-              Objects.requireNonNull(
-                      classLoader.getResource("certificates/self-signed/GA-1.01.0.53._.crt"))
-                  .toURI()),
-          tempDir,
-          StandardCopyOption.REPLACE_EXISTING);
-    } catch (FileAlreadyExistsException e) {
-      // Ignore
-    }
-    Map<String, X509Certificate> loadedCertificates =
-        certificateVolumeStorageService.loadCertificatesFromVolume();
-
-    assertTrue(loadedCertificates.containsKey("1.01.0.53."));
-  }
-
-  @Test
-  void shouldLoadCertificatesFromVolumeSuccessfullyWithLab()
+  @ParameterizedTest
+  @ValueSource(booleans = {true, false})
+  void shouldLoadCertificatesFromVolumeSuccessfully(final boolean featureFlag)
       throws IOException, URISyntaxException {
+    final var tempDir = Files.createTempDirectory(Path.of("target"), "");
     try {
-      final var tempDir = Files.createTempDirectory(Path.of("target"), "");
       certificateVolumeStorageService =
           new CertificateVolumeStorageService(
-              tempDir.toAbsolutePath().toString(), new FileManager(true));
+              tempDir.toAbsolutePath().toString(), new FileManager(featureFlag));
       // copy certificates to target folder
-      Files.copy(
+      final Path source =
           Path.of(
               Objects.requireNonNull(
                       classLoader.getResource("certificates/self-signed/GA-1.01.0.53._.crt"))
-                  .toURI()),
-          tempDir,
-          StandardCopyOption.REPLACE_EXISTING);
-    } catch (FileAlreadyExistsException e) {
-      // Ignore
-    }
-    Map<String, X509Certificate> loadedCertificates =
-        certificateVolumeStorageService.loadCertificatesFromVolume();
+                  .toURI());
+      Files.copy(
+          source, tempDir.resolve(source.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+      Map<String, X509Certificate> loadedCertificates =
+          certificateVolumeStorageService.loadCertificatesFromVolume();
 
-    assertTrue(loadedCertificates.containsKey("1.01.0.53."));
+      assertTrue(loadedCertificates.containsKey("1.01.0.53."));
+    } finally {
+      FileUtils.deleteDirectory(tempDir.toFile());
+    }
   }
 
   @Test

@@ -62,7 +62,7 @@ public class CertificateVolumeStorageService {
    * @return the certificates loaded from the filesystem
    */
   public Map<String, X509Certificate> loadCertificatesFromVolume() {
-    log.info("Loading Certificates from disk");
+    log.info("Loading Certificates from disk (without subdirectories): {}", rootPath);
     return fileManager.loadCertificatesFromPath(rootPath);
   }
 }
