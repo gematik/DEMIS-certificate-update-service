@@ -285,7 +285,11 @@ public class FileManager {
   private String getUserNameFromCertificate(final X509Certificate certificate) {
     final var commonName = Objects.requireNonNull(getCommonName(certificate));
     if (isReadLabCertificateFromDisk) {
-      return commonName.replace("GA-", "").replace("RKI-", "").replace("DEMIS-", "");
+      return commonName
+          .replace("GA-", "")
+          .replace("RKI-", "")
+          .replace("DEMIS-", "")
+          .replace("demis-", "");
     } else {
       return commonName.replace("GA-", "").replace("RKI-", "");
     }
