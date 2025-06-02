@@ -35,18 +35,37 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "keycloak", url = "${demis.network.keycloak-base-address}")
-public interface KeycloakClient {
+interface KeycloakClient {
 
   @PostMapping(
-      //      value = "/realms/master/protocol/openid-connect/token",
       value = "${demis.network.keycloak-token-address}",
       consumes = APPLICATION_FORM_URLENCODED_VALUE,
       produces = APPLICATION_JSON_VALUE)
-  ResponseEntity<String> getToken(
+  String getTokenWithPassword(
       @RequestPart("username") String username,
       @RequestPart("password") String password,
       @RequestPart("client_id") String clientId,
       @RequestPart("grant_type") String grantType);
+
+  @PostMapping(
+      value = "${demis.network.keycloak-token-address}",
+      consumes = APPLICATION_FORM_URLENCODED_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  String getTokenWithPasswordAndClientSecret(
+      @RequestPart("username") String username,
+      @RequestPart("password") String password,
+      @RequestPart("client_id") String clientId,
+      @RequestPart("grant_type") String grantType,
+      @RequestPart("client_secret") String clientSecret);
+
+  @PostMapping(
+      value = "${demis.network.keycloak-token-address}",
+      consumes = APPLICATION_FORM_URLENCODED_VALUE,
+      produces = APPLICATION_JSON_VALUE)
+  String getTokenWithClientSecretForServiceAccount(
+      @RequestPart("client_id") String clientId,
+      @RequestPart("grant_type") String grantType,
+      @RequestPart("client_secret") String clientSecret);
 
   @GetMapping(value = "${demis.network.keycloak-user-data-address}")
   ResponseEntity<List<KeycloakProperties>> getUsers(
