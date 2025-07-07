@@ -1,5 +1,11 @@
 # Release Notes
 
+## Release 1.8.2
+- Updated dependencies
+
+## Release 1.8.1
+- Updated dependencies
+
 ## Release 1.8.0
 - fixing issue with wrong cn name for hospital certificates to username mapping
 - Updated dependencies

@@ -11,6 +11,7 @@
 {{- $pvcName := .Values.config.volumeClaim.name | required ".Values.config.volumeClaim.name is required." -}}
 {{- $entrypointString := toString .Values.application.entrypoint | trimPrefix "[" | trimSuffix "]" -}}
 {{- $cmdParamsString := toString .Values.application.parameters | trimPrefix "[" | trimSuffix "]" -}}
+{{- $keycloakServiceAccountEnabled := eq (lower (toString (default false .Values.customEnvVars.FEATURE_FLAG_KEYCLOAK_CUS_CLIENT))) "true" -}}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -64,12 +65,21 @@ spec:
               items:
               - key: {{ $redisEntry }}
                 path: spring/data/redis/password
+          {{- if $keycloakServiceAccountEnabled }}
+          - name: keycloak-cus-client-secret-volume
+            secret:
+              secretName: {{ .Values.feature.keycloakServiceAccount.secret.name  | required ".Values.feature.keycloakServiceAccount.secret.name is rquired"  }}
+              items:
+                - key: {{ .Values.feature.keycloakServiceAccount.secret.key  | required ".Values.feature.keycloakServiceAccount.secret.key is rquired"  }}
+                  path: keycloak/clientSecret
+          {{- else }}
           - name: keycloak-secret-volume
             secret:
               secretName: {{ $keycloakSecretName }}
               items:
-              - key: {{ $keycloakEntry }}
-                path: keycloak/password
+                - key: {{ $keycloakEntry }}
+                  path: keycloak/password
+          {{- end }}
           {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
             {{- toYaml . | nindent 12 }}
@@ -115,9 +125,15 @@ spec:
             - name: redis-secret-volume
               readOnly: true
               mountPath: "{{ include "certificate-update-service.secretMountPath" . }}/redis"
+            {{- if $keycloakServiceAccountEnabled }}
+            - name: keycloak-cus-client-secret-volume
+              readOnly: true
+              mountPath: "{{ include "certificate-update-service.secretMountPath" . }}/keycloak-cus-client-secret"
+            {{- else }}
             - name: keycloak-secret-volume
               readOnly: true
               mountPath: "{{ include "certificate-update-service.secretMountPath" . }}/keycloak"
+            {{- end }}
             # Set the Environment Variables for the container
             env:
             - name: "TZ"
@@ -126,11 +142,15 @@ spec:
             - name: "JAVA_TOOL_OPTIONS"
               value: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:9000"
             {{- end }}
-            {{- if $customEnvVars }}
-            # Custom Defined Environment Variables
-            {{- range $_, $key := keys $customEnvVars | sortAlpha }}
+              # Custom Defined Environment Variables
+            {{- $effectiveEnvVars := $customEnvVars }}
+            {{- if $keycloakServiceAccountEnabled }}
+              {{- $effectiveEnvVars = merge .Values.feature.keycloakServiceAccount.customEnvVars $customEnvVars }}
+            {{- end }}
+            {{- if $effectiveEnvVars }}
+            {{- range $_, $key := keys $effectiveEnvVars | sortAlpha }}
             - name: {{ $key | quote }}
-              value: {{ get $customEnvVars $key | quote }}
+              value: {{ get $effectiveEnvVars $key | quote }}
             {{- end }}
             {{- end }}
             # Set Spring Configuration Import from Folder Structure
