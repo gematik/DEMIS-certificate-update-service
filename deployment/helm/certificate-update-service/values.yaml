@@ -44,6 +44,16 @@ config:
     # The (external) Persistence Volume Claim to be used
     name: cus-volume-claim
 
+feature:
+  keycloakServiceAccount:
+    customEnvVars:
+      KEYCLOAK_TOKEN_URL: "realms/OEGD/protocol/openid-connect/token"
+      KEYCLOAK_CLIENTID: "cus-cli"
+      KEYCLOAK_GRANTTYPE: "client_credentials"
+    secret:
+      name: keycloak-cus-client-secret
+      key: KC_CUS_CLI_SECRET
+
 # Extra Labels to be added
 # E.g.
 # customLabels:
@@ -72,6 +82,10 @@ customEnvVars:
   FEATURE_FLAG_IMPORT_FROM_DISK: "false"
   # need if Testuser with Sender is recipient used
   FEATURE_FLAG_READ_LAB_CERTIFICATE_FROM_DISK: "false"
+  # true: use special cus client to fetch keycloak access token
+  # false: old behaviour: admin-cli is used
+  # note: this flag is only needed in helm chart, not in the application
+  FEATURE_FLAG_KEYCLOAK_CUS_CLIENT: "false"
 
 # Define custom Container Entrypoint and Arguments (e.g. JVM Tuning)
 # If not given, the Entrypoint defined in Dockerfile will be used
