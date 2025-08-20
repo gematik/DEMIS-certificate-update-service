@@ -26,55 +26,60 @@ package de.gematik.demis.certificateupdateservice.connector.keycloak;
  * #L%
  */
 
+import static org.springframework.util.StringUtils.hasText;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class KeycloakConnectionService {
 
+  private final KeycloakConnectionConfigProperties props;
   private final KeycloakClient keyCloakClient;
-
-  private final String username;
-  private final String password;
-  private final String clientId;
-  private final String grantType;
-
-  public KeycloakConnectionService(
-      @Value("${keycloak.username}") String username,
-      @Value("${keycloak.password}") String password,
-      @Value("${keycloak.clientId}") String clientId,
-      @Value("${keycloak.grantType}") String grantType,
-      KeycloakClient keyCloakClient) {
-    this.username = username;
-    this.password = password;
-    this.clientId = clientId;
-    this.grantType = grantType;
-    this.keyCloakClient = keyCloakClient;
-  }
 
   public Set<String> fetchUserIds() {
     String token = getToken();
     return getUserIds(token);
   }
 
-  private String getToken() {
+  String getToken() {
+    final String jsonResponse = callGetToken();
 
-    log.info("call for token");
-    ResponseEntity<String> token = keyCloakClient.getToken(username, password, clientId, grantType);
-    String body = token.getBody();
-
-    log.debug("recieved body: {}", body);
-    JSONObject bodyAsJson = new JSONObject(body);
+    final JSONObject bodyAsJson = new JSONObject(jsonResponse);
 
     return bodyAsJson.getString("access_token");
+  }
+
+  private String callGetToken() {
+    if (props.isClientCredentialsGrantType()) {
+      log.info("call for token with service account client secret");
+      return keyCloakClient.getTokenWithClientSecretForServiceAccount(
+          props.clientId(), props.grantType(), props.clientSecret());
+    } else {
+      if (hasText(props.clientSecret())) {
+        log.info("call for token with username and password and client secret");
+        return keyCloakClient.getTokenWithPasswordAndClientSecret(
+            props.username(),
+            props.password(),
+            props.clientId(),
+            props.grantType(),
+            props.clientSecret());
+
+      } else {
+        log.info("call for token with username and password");
+        return keyCloakClient.getTokenWithPassword(
+            props.username(), props.password(), props.clientId(), props.grantType());
+      }
+    }
   }
 
   private Set<String> getUserIds(String token) {

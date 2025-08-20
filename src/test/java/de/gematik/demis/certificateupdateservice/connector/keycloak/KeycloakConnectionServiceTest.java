@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -47,18 +48,21 @@ class KeycloakConnectionServiceTest {
 
   @Mock private KeycloakClient keycloakClient;
 
+  @BeforeEach
+  void setUp() {
+    final var props =
+        new KeycloakConnectionConfigProperties(
+            "username", "password", null, "clientId", "password");
+    keycloakConnectionService = new KeycloakConnectionService(props, keycloakClient);
+  }
+
   @Test
   void shouldCallKeycloakClientAndReturnUserIdList() {
-
-    keycloakConnectionService =
-        new KeycloakConnectionService(
-            "username", "password", "clientId", "grantType", keycloakClient);
-
     Map<String, String> map = new HashMap<>();
     map.put("access_token", "someTokenString");
     JSONObject jsonbody = new JSONObject(map);
-    when(keycloakClient.getToken("username", "password", "clientId", "grantType"))
-        .thenReturn(ResponseEntity.ok(jsonbody.toString()));
+    when(keycloakClient.getTokenWithPassword("username", "password", "clientId", "password"))
+        .thenReturn(jsonbody.toString());
 
     when(keycloakClient.getUsers("Bearer someTokenString", Integer.MAX_VALUE))
         .thenReturn(ResponseEntity.ok(List.of(new KeycloakProperties("1."))));
@@ -70,16 +74,11 @@ class KeycloakConnectionServiceTest {
 
   @Test
   void shouldReturnEmptyUserListForMissingBody() {
-
-    keycloakConnectionService =
-        new KeycloakConnectionService(
-            "username", "password", "clientId", "grantType", keycloakClient);
-
     Map<String, String> map = new HashMap<>();
     map.put("access_token", "someTokenString");
     JSONObject jsonbody = new JSONObject(map);
-    when(keycloakClient.getToken("username", "password", "clientId", "grantType"))
-        .thenReturn(ResponseEntity.ok(jsonbody.toString()));
+    when(keycloakClient.getTokenWithPassword("username", "password", "clientId", "password"))
+        .thenReturn(jsonbody.toString());
 
     when(keycloakClient.getUsers("Bearer someTokenString", Integer.MAX_VALUE))
         .thenReturn(ResponseEntity.ok().build());
