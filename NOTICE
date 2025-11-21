@@ -29,7 +29,7 @@ This project includes:
   Apache HttpComponents Core HTTP/1.1 under Apache License, Version 2.0
   Apache HttpComponents Core HTTP/2 under Apache License, Version 2.0
   Apache HttpCore under Apache License, Version 2.0
-  Apache James :: Mime4j :: Core under Apache License, Version 2.0
+  Apache James :: Mime4j :: Core under Apache-2.0
   Apache James :: Mime4j :: DOM under Apache License, Version 2.0
   Apache James :: Mime4j :: Storage under Apache License, Version 2.0
   Apache Log4j API under Apache-2.0
@@ -83,7 +83,7 @@ This project includes:
   Jakarta Mail API under EPL 2.0 or GPL2 w/ CPE or EDL 1.0
   Jakarta RESTful WS API under EPL-2.0 or GPL-2.0-with-classpath-exception
   Jakarta XML Binding API under Eclipse Distribution License - v 1.0
-  Java Annotation Indexer under Apache License, Version 2.0
+  Jandex: Core under Apache License, Version 2.0
   Java Native Access under LGPL-2.1-or-later or Apache-2.0
   javax.inject under The Apache Software License, Version 2.0
   JAXB Core under Eclipse Distribution License - v 1.0

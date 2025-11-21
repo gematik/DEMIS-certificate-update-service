@@ -1,5 +1,8 @@
 # Release Notes
 
+## Release 1.8.3
+- Updated dependencies
+
 ## Release 1.8.2
 - Updated dependencies
 
