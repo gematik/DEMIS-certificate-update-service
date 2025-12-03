@@ -1,5 +1,11 @@
 # Release Notes
 
+## Release 1.8.5
+- fixed pod annotations in helmchart
+
+## Release 1.8.4
+- Updated dependencies
+
 ## Release 1.8.3
 - Updated dependencies
 

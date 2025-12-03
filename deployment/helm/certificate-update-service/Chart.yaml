@@ -2,5 +2,5 @@ apiVersion: v2
 name: certificate-update-service
 description: DEMIS Certificate Update Service Helm Chart
 type: application
-version: 1.8.3
-appVersion: "1.8.3"
+version: 1.8.4
+appVersion: "1.8.4"
