@@ -91,7 +91,7 @@ customEnvVars:
 # If not given, the Entrypoint defined in Dockerfile will be used
 application:
   entrypoint: ["java"]
-  parameters: ["-XX:ActiveProcessorCount=2", "-XX:MaxRAMPercentage=80.0", "-XX:+TieredCompilation", "-XX:+UseSerialGC", "-jar", "/app/app.jar"]
+  parameters: ["-XX:ActiveProcessorCount=2", "-XX:MaxRAMPercentage=65.0", "-XX:+TieredCompilation", "-XX:+UseG1GC", "-jar", "/app/app.jar"]
 
 # Define Image Pull Secrets if using private registry
 imagePullSecrets: []
