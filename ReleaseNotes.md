@@ -1,6 +1,14 @@
 <div style="text-align:right"><img src="https://raw.githubusercontent.com/gematik/gematik.github.io/master/Gematik_Logo_Flag_With_Background.png" width="250" height="47" alt="gematik GmbH Logo"/> <br/> </div> <br/>
 
 # Release Notes
+## Release 1.9.0 
+- updated base-image and updated from java 21 to java 25
+- removed istio helm chart
+- updated maxRAMPercentage to 65%
+- updated netty to 4.2.x
+
+## Release 1.8.6
+- updated base image
 
 ## Release 1.8.5
 - fixed pod annotations in helmchart
