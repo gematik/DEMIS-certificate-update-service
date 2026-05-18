@@ -53,7 +53,9 @@ public class CertificateUpdateServiceApplication implements CommandLineRunner {
    * @param args command line arguments
    */
   public static void main(String[] args) {
-    SpringApplication.run(CertificateUpdateServiceApplication.class, args);
+    SpringApplication app = new SpringApplication(CertificateUpdateServiceApplication.class);
+    app.setWebApplicationType(org.springframework.boot.WebApplicationType.NONE);
+    app.run(args);
   }
 
   @Override

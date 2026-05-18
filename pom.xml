@@ -4,11 +4,11 @@
   <parent>
     <groupId>de.gematik.demis</groupId>
     <artifactId>spring-parent</artifactId>
-    <version>2.15.0</version>
+    <version>2.16.1</version>
     <relativePath></relativePath><!-- lookup parent from repository -->
   </parent>
   <artifactId>certificate-update-service</artifactId>
-  <version>1.8.7-SNAPSHOT</version>
+  <version>1.9.1-SNAPSHOT</version>
   <name>certificate-update-service</name>
   <packaging>jar</packaging>
   <description>Update service for user certificates of DEMIS users</description>
@@ -20,34 +20,29 @@
   </licenses>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>25</java.version><!-- Dependencies -->
-    <bouncyCastle.version>1.82</bouncyCastle.version>
-    <keycloak.admin.client.version>26.0.6</keycloak.admin.client.version>
+    <java.version>25</java.version>
+    <keycloak.admin.client.version>26.0.9</keycloak.admin.client.version>
     <commons-text.version>1.14.0</commons-text.version>
     <json.version>20250517</json.version>
     <commons-fileupload.version>1.6.0</commons-fileupload.version>
-    <resteasy.version>6.2.14.Final</resteasy.version>
+    <resteasy.version>6.2.16.Final</resteasy.version>
     <apache-mime4j.version>0.8.13</apache-mime4j.version>
     <apache-api-all.version>2.1.7</apache-api-all.version>
-    <netty.version>4.2.10.Final</netty.version>
+    <apache-mina.version>2.2.7</apache-mina.version>
     <commons-pool2.version>2.12.1</commons-pool2.version>
     <junit-jupiter.version>5.13.4</junit-jupiter.version>
     <junit-pioneer.version>2.3.0</junit-pioneer.version>
     <testcontainers.version>2.0.2</testcontainers.version>
+    <surefire.plugin.version>3.5.4</surefire.plugin.version>
+    <failsafe.plugin.version>3.5.4</failsafe.plugin.version>
   </properties>
   <dependencyManagement>
-    <dependencies>
-      <!-- Netty BOM: Override spring-parent pinned 4.1.x with Java 25-compatible 4.2.x
-           TODO: remove after updated netty dependency in spring-parent
-      -->
+    <dependencies><!--   Trivy Scan Override -->
       <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-bom</artifactId>
-        <version>${netty.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.apache.mina</groupId>
+        <artifactId>mina-core</artifactId>
+        <version>${apache-mina.version}</version>
       </dependency>
-      <!--   Trivy Scan Override -->
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
@@ -57,16 +52,6 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
         <version>${commons-text.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.bouncycastle</groupId>
-        <artifactId>bcprov-jdk18on</artifactId>
-        <version>${bouncyCastle.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.bouncycastle</groupId>
-        <artifactId>bcpkix-jdk18on</artifactId>
-        <version>${bouncyCastle.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
@@ -216,6 +201,13 @@
   </dependencies>
   <build>
     <finalName>${project.artifactId}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire.plugin.version}</version>
+      </plugin>
+    </plugins>
   </build>
   <profiles>
     <profile>
@@ -228,7 +220,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>${maven-surefire-plugin.version}</version>
+            <version>${failsafe.plugin.version}</version>
             <executions>
               <execution>
                 <id>integration-test</id>

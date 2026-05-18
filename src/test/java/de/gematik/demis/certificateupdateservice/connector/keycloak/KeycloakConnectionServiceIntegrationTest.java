@@ -53,6 +53,7 @@ import org.springframework.http.MediaType;
 @EnableFeignClients(clients = KeycloakClient.class)
 @SpringBootTest(
     classes = {KeycloakClient.class},
+    webEnvironment = SpringBootTest.WebEnvironment.NONE,
     properties = {
       "demis.network.keycloak-base-address=http://localhost:${wiremock.server.port}",
       "demis.network.keycloak-token-address=/realms/myrealm/protocol/openid-connect/token"
