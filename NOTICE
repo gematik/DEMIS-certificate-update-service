@@ -73,16 +73,20 @@ This project includes:
   Jackson datatype: JSR310 under The Apache Software License, Version 2.0
   Jackson Jakarta-RS: base under The Apache Software License, Version 2.0
   Jackson Jakarta-RS: JSON under The Apache Software License, Version 2.0
+  Jackson Jakarta-RS: YAML under The Apache Software License, Version 2.0
   Jackson module: Jakarta XML Bind Annotations (jakarta.xml.bind) under The Apache Software License, Version 2.0
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
   jackson-coreutils under Lesser General Public License, version 3 or greater or Apache Software License, version 2.0
   jackson-databind under The Apache Software License, Version 2.0
+  Jackson-dataformat-YAML under The Apache Software License, Version 2.0
+  Jackson-module-parameter-names under The Apache Software License, Version 2.0
   Jakarta Activation API under EDL 1.0
   Jakarta Annotations API under EPL 2.0 or GPL2 w/ CPE
   Jakarta Bean Validation API under Apache License 2.0
   Jakarta Mail API under EPL 2.0 or GPL2 w/ CPE or EDL 1.0
   Jakarta RESTful WS API under EPL-2.0 or GPL-2.0-with-classpath-exception
+  Jakarta Servlet under EPL 2.0 or GPL2 w/ CPE
   Jakarta XML Binding API under Eclipse Distribution License - v 1.0
   Java Annotation Indexer under Apache License, Version 2.0
   Java Native Access under LGPL-2.1-or-later or Apache-2.0
@@ -137,7 +141,7 @@ This project includes:
   mockito-junit-jupiter under MIT
   msg-simple under Lesser General Public License, version 3 or greater or Apache Software License, version 2.0
   Netty/Buffer under Apache License, Version 2.0
-  Netty/Codec/Base under Apache License, Version 2.0
+  Netty/Codec under Apache License, Version 2.0
   Netty/Common under Apache License, Version 2.0
   Netty/Handler under Apache License, Version 2.0
   Netty/Resolver under Apache License, Version 2.0
@@ -185,14 +189,18 @@ This project includes:
   Spring TestContext Framework under Apache License, Version 2.0
   Spring Transaction under Apache License, Version 2.0
   Spring Web under Apache License, Version 2.0
+  Spring Web MVC under Apache License, Version 2.0
   spring-boot under Apache License, Version 2.0
   spring-boot-autoconfigure under Apache License, Version 2.0
   spring-boot-starter under Apache License, Version 2.0
   spring-boot-starter-data-ldap under Apache License, Version 2.0
   spring-boot-starter-data-redis under Apache License, Version 2.0
+  spring-boot-starter-json under Apache License, Version 2.0
   spring-boot-starter-logging under Apache License, Version 2.0
   spring-boot-starter-test under Apache License, Version 2.0
+  spring-boot-starter-tomcat under Apache License, Version 2.0
   spring-boot-starter-validation under Apache License, Version 2.0
+  spring-boot-starter-web under Apache License, Version 2.0
   spring-boot-test under Apache License, Version 2.0
   spring-boot-test-autoconfigure under Apache License, Version 2.0
   spring-cloud-contract-wiremock under Apache License, Version 2.0
@@ -202,7 +210,9 @@ This project includes:
   spring-security-crypto under Apache License, Version 2.0
   Testcontainers :: JUnit Jupiter Extension under MIT
   Testcontainers Core under MIT
+  tomcat-embed-core under Apache License, Version 2.0
   tomcat-embed-el under Apache License, Version 2.0
+  tomcat-embed-websocket under Apache License, Version 2.0
   TXW2 Runtime under Eclipse Distribution License - v 1.0
   UnboundID LDAP SDK for Java under Apache License, Version 2 or GNU General Public License version 2 (GPLv2) or GNU Lesser General Public License version 2.1 (LGPLv2.1) or UnboundID LDAP SDK Free Use License
   WireMock under The Apache Software License, Version 2.0
