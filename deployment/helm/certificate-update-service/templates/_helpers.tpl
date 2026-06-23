@@ -84,3 +84,37 @@ Get Default MountPath for Secrets
 {{- define "certificate-update-service.secretMountPath" -}}
 {{- print "/secrets" }}
 {{- end }}
+
+{{/*
+Environment Variables
+*/}}
+{{- define "certificate-update-service.env" -}}
+{{- $envs := dict -}}
+{{- if .Values.customEnvVars -}}
+{{- range $key, $value := .Values.customEnvVars -}}
+{{ if $value -}}
+{{- $envs = set $envs $key $value }}
+{{- end -}}
+{{- end -}}
+{{- if eq (lower (toString (default false .Values.customEnvVars.FEATURE_FLAG_KEYCLOAK_CUS_CLIENT))) "true" }}
+{{- range $key, $value := .Values.feature.keycloakServiceAccount.customEnvVars -}}
+{{- $envs = set $envs $key $value }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- if .Values.debug.enable -}}
+{{- $toolOptions := printf "%s %s" (get $envs "JAVA_TOOL_OPTIONS") .Values.debug.params | trim -}}
+{{- $envs = set $envs "JAVA_TOOL_OPTIONS" $toolOptions -}}
+{{- end -}}
+{{- range $i, $key := keys $envs | sortAlpha -}}
+{{- if $i }}
+{{ end -}}
+{{- $v := get $envs $key -}}
+- name: {{ $key | quote }}
+{{- if kindIs "string" $v }}
+  value: {{ tpl $v $ | quote }}
+{{- else }}
+  value: {{ $v | quote }}
+{{- end }}
+{{- end -}}
+{{- end -}}

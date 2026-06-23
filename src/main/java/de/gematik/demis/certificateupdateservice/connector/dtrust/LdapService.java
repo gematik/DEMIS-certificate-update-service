@@ -31,7 +31,12 @@ import de.gematik.demis.certificateupdateservice.connector.dtrust.helpers.Certif
 import de.gematik.demis.certificateupdateservice.connector.dtrust.helpers.OfflineCertificateValidator;
 import de.gematik.demis.certificateupdateservice.connector.dtrust.helpers.OnlineCertificateValidator;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
