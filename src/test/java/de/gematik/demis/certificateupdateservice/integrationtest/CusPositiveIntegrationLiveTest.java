@@ -46,18 +46,19 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.ldap.AutoConfigureDataLdap;
+import org.springframework.boot.data.ldap.test.autoconfigure.AutoConfigureDataLdap;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.wiremock.spring.ConfigureWireMock;
+import org.wiremock.spring.EnableWireMock;
 
 @SpringBootTest(
     classes = {CertificateUpdateServiceApplication.class, TestConfig.class},
     webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles(profiles = "live-integrationtest")
-@AutoConfigureWireMock(port = 0, files = "integrationtest/wiremock")
+@EnableWireMock(@ConfigureWireMock(filesUnderClasspath = "integrationtest/wiremock"))
 @AutoConfigureDataLdap
 @Slf4j
 class CusPositiveIntegrationLiveTest {

@@ -1,6 +1,13 @@
 <div style="text-align:right"><img src="https://raw.githubusercontent.com/gematik/gematik.github.io/master/Gematik_Logo_Flag_With_Background.png" width="250" height="47" alt="gematik GmbH Logo"/> <br/> </div> <br/>
 
 # Release Notes
+## Release 1.10.0
+- upgraded to spring boot 4
+- added prometheus pod annotations to helm chart
+- arranged jvm options and resource limits
+- optimized custom environment variables handling in helm chart
+- updated docker base image to gematik1/osadl-alpine-openjdk25-jre:1.0.5
+
 ## Release 1.9.1
 - updated keycloak to 26.0.9
 - updated resteasy to 6.2.16.Final

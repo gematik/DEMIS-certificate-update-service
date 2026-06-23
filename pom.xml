@@ -4,11 +4,11 @@
   <parent>
     <groupId>de.gematik.demis</groupId>
     <artifactId>spring-parent</artifactId>
-    <version>2.16.1</version>
+    <version>4.0.6</version>
     <relativePath></relativePath><!-- lookup parent from repository -->
   </parent>
   <artifactId>certificate-update-service</artifactId>
-  <version>1.9.1-SNAPSHOT</version>
+  <version>1.10.0-SNAPSHOT</version>
   <name>certificate-update-service</name>
   <packaging>jar</packaging>
   <description>Update service for user certificates of DEMIS users</description>
@@ -19,21 +19,14 @@
     </license>
   </licenses>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>25</java.version>
     <keycloak.admin.client.version>26.0.9</keycloak.admin.client.version>
-    <commons-text.version>1.14.0</commons-text.version>
-    <json.version>20250517</json.version>
-    <commons-fileupload.version>1.6.0</commons-fileupload.version>
-    <resteasy.version>6.2.16.Final</resteasy.version>
-    <apache-mime4j.version>0.8.13</apache-mime4j.version>
+    <json.version>20251224</json.version>
+    <resteasy.version>7.0.2.Final</resteasy.version>
+    <apache-mime4j.version>0.8.14</apache-mime4j.version>
     <apache-api-all.version>2.1.7</apache-api-all.version>
     <apache-mina.version>2.2.7</apache-mina.version>
-    <commons-pool2.version>2.12.1</commons-pool2.version>
-    <junit-jupiter.version>5.13.4</junit-jupiter.version>
+    <commons-pool2.version>2.13.1</commons-pool2.version>
     <junit-pioneer.version>2.3.0</junit-pioneer.version>
-    <testcontainers.version>2.0.2</testcontainers.version>
-    <surefire.plugin.version>3.5.4</surefire.plugin.version>
     <failsafe.plugin.version>3.5.4</failsafe.plugin.version>
   </properties>
   <dependencyManagement>
@@ -42,16 +35,6 @@
         <groupId>org.apache.mina</groupId>
         <artifactId>mina-core</artifactId>
         <version>${apache-mina.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-fileupload</groupId>
-        <artifactId>commons-fileupload</artifactId>
-        <version>${commons-fileupload.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-text</artifactId>
-        <version>${commons-text.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
@@ -97,10 +80,6 @@
   </dependencyManagement>
   <dependencies>
     <dependency>
-      <groupId>de.gematik.demis</groupId>
-      <artifactId>service-base</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-redis</artifactId>
     </dependency>
@@ -134,53 +113,14 @@
       <version>${keycloak.admin.client.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>${json.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>android-json</artifactId>
-          <groupId>com.vaadin.external.google</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit-jupiter.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
       <version>${junit-pioneer.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-wiremock</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>httpclient</artifactId>
-          <groupId>org.apache.httpcomponents</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers</artifactId>
-      <version>${testcontainers.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -190,25 +130,15 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-ldap</artifactId>
+      <artifactId>spring-boot-starter-data-ldap-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.unboundid</groupId>
       <artifactId>unboundid-ldapsdk</artifactId>
       <scope>test</scope>
-    </dependency><!-- Test Containers -->
+    </dependency>
   </dependencies>
-  <build>
-    <finalName>${project.artifactId}</finalName>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire.plugin.version}</version>
-      </plugin>
-    </plugins>
-  </build>
   <profiles>
     <profile>
       <id>it</id>
