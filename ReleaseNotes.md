@@ -1,6 +1,15 @@
 <div style="text-align:right"><img src="https://raw.githubusercontent.com/gematik/gematik.github.io/master/Gematik_Logo_Flag_With_Background.png" width="250" height="47" alt="gematik GmbH Logo"/> <br/> </div> <br/>
 
 # Release Notes
+## Release 1.10.1
+- fixed handling of falsy custom environment variables (false, 0) in helm chart
+- dependency updates
+- updated docker base image to gematik1/osadl-alpine-openjdk25-jre:1.0.7
+- added VEX documents to repository
+- Updated minor/patch versions of dependencies
+- fixed dependency scope
+- removed wrong scraping annotations
+
 ## Release 1.10.0
 - upgraded to spring boot 4
 - added prometheus pod annotations to helm chart

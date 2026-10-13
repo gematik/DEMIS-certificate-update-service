@@ -116,10 +116,7 @@ serviceAccount:
 annotations: {}
 
 # Annotations for Pods
-podAnnotations:
-  prometheus.io/scrape: "true"
-  prometheus.io/path: "/actuator/prometheus"
-  prometheus.io/port: "8080"
+podAnnotations: {}
 
 # Pod Security Context - applies to all containers in a Pod
 podSecurityContext:

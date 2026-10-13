@@ -4,11 +4,11 @@
   <parent>
     <groupId>de.gematik.demis</groupId>
     <artifactId>spring-parent</artifactId>
-    <version>4.0.6</version>
+    <version>4.1.13</version>
     <relativePath></relativePath><!-- lookup parent from repository -->
   </parent>
   <artifactId>certificate-update-service</artifactId>
-  <version>1.10.0-SNAPSHOT</version>
+  <version>1.10.1-SNAPSHOT</version>
   <name>certificate-update-service</name>
   <packaging>jar</packaging>
   <description>Update service for user certificates of DEMIS users</description>
@@ -19,15 +19,15 @@
     </license>
   </licenses>
   <properties>
-    <keycloak.admin.client.version>26.0.9</keycloak.admin.client.version>
-    <json.version>20251224</json.version>
-    <resteasy.version>7.0.2.Final</resteasy.version>
-    <apache-mime4j.version>0.8.14</apache-mime4j.version>
-    <apache-api-all.version>2.1.7</apache-api-all.version>
-    <apache-mina.version>2.2.7</apache-mina.version>
+    <keycloak.admin.client.version>26.0.12</keycloak.admin.client.version>
+    <json.version>20260719</json.version>
+    <resteasy.version>7.0.5.Final</resteasy.version>
+    <apache-mime4j.version>0.8.15</apache-mime4j.version>
+    <apache-api-all.version>2.1.9</apache-api-all.version>
+    <apache-mina.version>2.2.9</apache-mina.version>
     <commons-pool2.version>2.13.1</commons-pool2.version>
     <junit-pioneer.version>2.3.0</junit-pioneer.version>
-    <failsafe.plugin.version>3.5.4</failsafe.plugin.version>
+    <failsafe.plugin.version>3.6.0</failsafe.plugin.version>
   </properties>
   <dependencyManagement>
     <dependencies><!--   Trivy Scan Override -->
@@ -82,6 +82,10 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-http-converter</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
