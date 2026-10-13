@@ -1,10 +1,10 @@
 # Declare Source Digest for the Base Image
-ARG SOURCE_DIGEST=b25f889d5ef8e086d582dabf2134720c6de2564016ae7a85a234215110edddcc
-FROM gematik1/osadl-alpine-openjdk25-jre:1.0.5@sha256:${SOURCE_DIGEST}
+ARG SOURCE_DIGEST=sha256:cbf4e3d8fca40adc95f411195fe5beb1879a97ce29a7e81f933e64408a1b8509
+FROM gematik1/osadl-alpine-openjdk25-jre:1.1.0@${SOURCE_DIGEST}
 
 # Redeclare Source Digest to be used in the build context
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG SOURCE_DIGEST=b25f889d5ef8e086d582dabf2134720c6de2564016ae7a85a234215110edddcc
+ARG SOURCE_DIGEST
 
 # The STOPSIGNAL instruction sets the system call signal that will be sent to the container to exit
 # SIGTERM = 15 - https://de.wikipedia.org/wiki/Signal_(Unix)
@@ -41,7 +41,7 @@ ARG VERSION
 LABEL de.gematik.vendor="gematik GmbH" \
       maintainer="software-development@gematik.de" \
       de.gematik.app="DEMIS Certificate Update Service" \
-      de.gematik.git-repo-name="https://gitlab.prod.ccs.gematik.solutions/git/demis/certificate-update-service" \
+      de.gematik.git-repo-name="https://gitlab.prod.ccs.gematik.solutions/demis/services/certificate-update-service.git" \
       de.gematik.commit-sha=$COMMIT_HASH \
       de.gematik.version=$VERSION \
       de.gematik.source.digest=$SOURCE_DIGEST
